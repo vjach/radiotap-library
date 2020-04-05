@@ -3,7 +3,7 @@ project(radiotap)
 
 add_definitions("-D_BSD_SOURCE -DRADIOTAP_SUPPORT_OVERRIDES")
 
-add_library(radiotap SHARED radiotap.c)
+add_library(radiotap radiotap.c)
 set_target_properties(radiotap PROPERTIES
 		      COMPILE_FLAGS "-Wall -Wextra")
 
@@ -13,8 +13,11 @@ install(FILES radiotap.h radiotap_iter.h DESTINATION include)
 add_executable(parse parse.c)
 set_target_properties(parse PROPERTIES
 		      COMPILE_FLAGS "-Wall -Wextra")
-target_link_libraries(parse radiotap)
 
+target_link_libraries(parse radiotap)
+target_include_directories(radiotap PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
 
 add_custom_target(radiotap_check ALL
 		  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check/check.sh ${CMAKE_CURRENT_BINARY_DIR}
